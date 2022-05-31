@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class student {
 
     @GetMapping("/mystudent")
-    @PreAuthorize("hasAnyRole('STUDENT')")
     public String getStudent(){
         return "student";
     }

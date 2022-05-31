@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static com.studentregistrationapi.registerstudent.security.ApplicationUserRole.*;
 import static org.springframework.security.config.Customizer.withDefaults;
-
+@EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 public class WebSecurityConfig  {
@@ -38,38 +39,52 @@ public class WebSecurityConfig  {
         return http.build();
     }
 
+
+
+  //  @Bean
+  //  public WebSecurityCustomizer webSecurityCustomizer() {
+  //      return (web) -> web.ignoring().antMatchers("/index*");
+  //  }
+
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/index*");
+    protected SecurityFilterChain filterChainAdmin(HttpSecurity http) throws Exception{
+        http
+                .authorizeHttpRequests()
+                .antMatchers("/admin**").hasRole(ADMIN.name())
+                .anyRequest()
+                .authenticated()
+                .and()
+                .httpBasic();
+        return http.build();
+     }
+
+    @Bean
+    public InMemoryUserDetailsManager userDetailsService() {
+        UserDetails charitha = User.builder()
+                .username("charitha")
+                .password(passwordEncoder.encode("password"))
+                .roles(APP_USER.name())
+                .build();
+
+        UserDetails imalki = User.builder()
+                .username("imalki")
+                .password(passwordEncoder.encode("password"))
+                .roles(TEACHER.name())
+                .build();
+
+        UserDetails pinky = User.builder()
+                .username("pinky")
+                .password(passwordEncoder.encode("password"))
+                .roles(STUDENT.name())
+                .build();
+
+        UserDetails apeksha = User.builder()
+                .username("apeksha")
+                .password(passwordEncoder.encode("password"))
+                .roles(ADMIN.name())
+                .build();
+        return new InMemoryUserDetailsManager(charitha,imalki,pinky,apeksha);
     }
-
-        @Bean
-        public InMemoryUserDetailsManager userDetailsService() {
-            UserDetails charitha = User.builder()
-                    .username("charitha")
-                    .password(passwordEncoder.encode("password"))
-                    .roles(APP_USER.name())
-                    .build();
-
-            UserDetails imalki = User.builder()
-                    .username("imalki")
-                    .password(passwordEncoder.encode("password"))
-                    .roles(TEACHER.name())
-                    .build();
-
-            UserDetails pinky = User.builder()
-                    .username("pinky")
-                    .password(passwordEncoder.encode("password"))
-                    .roles(STUDENT.name())
-                    .build();
-
-            UserDetails apeksha = User.builder()
-                    .username("apeksha")
-                    .password(passwordEncoder.encode("password"))
-                    .roles(ADMIN.name())
-                    .build();
-            return new InMemoryUserDetailsManager(charitha,imalki,pinky,apeksha);
-        }
-    }
+}
 
 

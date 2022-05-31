@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/visitor")
 public class visitor {
     @GetMapping("/openday")
-    @PreAuthorize("hasAnyRole('APP_USER')")
     public String getStudent(){
         return "visitor";
     }

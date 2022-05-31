@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class admin {
 
     @GetMapping("/myadmin")
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public String getStudent(){
         return "admin";
     }
